@@ -1,9 +1,10 @@
 import pygame
+from random import randint
 
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 SCREEN_CENTER_X, SCREEN_CENTER_Y = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
-FPS = 10
+FPS = 5
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -29,33 +30,33 @@ class Circle(GameObject):
 
     def draw(self):
         pygame.draw.circle(self.surface, 
-                self.color, 
-                (self.x, self.y), 
-                self.radius)
+                            self.color, 
+                            (self.x, self.y), 
+                            self.radius)
 
 
-circle = Circle(screen, 
-        (255, 0, 0), 
-        SCREEN_CENTER_X, 
-        SCREEN_CENTER_Y, 
-        40, 
-        50)
+circles = [Circle(screen,
+                  (randint(0, 255), randint(0, 255), randint(0, 255)),
+                  randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT),
+                  randint(5,50),
+                  randint(10, 50)) for _ in range(3)]
 
 running = True
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
     screen.fill((0, 0, 0))
-    circle.draw()
-    if circle.x + circle.radius >= SCREEN_WIDTH:
-        circle.direction = -1
-    if circle.x - circle.radius <= 0:
-        circle.direction = 1
-    circle.x += circle.speed * circle.direction
+    for circle in circles:
+        circle.draw()
+        if circle.x + circle.radius >= SCREEN_WIDTH:
+            circle.direction = -1
+            print(circle.x + circle.radius)
+        if circle.x - circle.radius <= 0:
+            circle.direction = 1
+        circle.x += circle.speed * circle.direction
     pygame.display.update()
 
     clock.tick(FPS)
 
-pygame.quit() 
+pygame.quit()
