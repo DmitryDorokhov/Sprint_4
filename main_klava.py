@@ -51,6 +51,11 @@ class Circle(GameObject):
             self.direction = -1
         if self.x - self.radius <= 0:
             self.direction = 1
+        if self.y + self.radius >= SCREEN_HEIGHT:
+            self.direction = -2
+        if self.y - self.radius <= 0:
+            self.direction = 2
+
 
 def handle_keys(object):
     for event in pygame.event.get():
