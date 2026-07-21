@@ -3,7 +3,7 @@ import pygame
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 SCREEN_CENTER_X, SCREEN_CENTER_Y = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
-FPS = 5
+FPS = 10
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -18,53 +18,44 @@ class GameObject:
     def draw(self):
         pass
 
-
 class Circle(GameObject):
-    def __init__(self, surface, color, x, y, radius):
+    def __init__(self, surface, color, x, y, radius, speed):
         super().__init__(surface, color)
         self.x = x
         self.y = y
         self.radius = radius
+        self.speed = speed
+        self.direction = 1
 
     def draw(self):
-        pygame.draw.circle(self.surface, self.color, (self.x, self.y), self.radius)
+        pygame.draw.circle(self.surface, 
+                self.color, 
+                (self.x, self.y), 
+                self.radius)
 
 
-class Square(GameObject):
-    def __init__(self, surface, color, x, y, side):
-        super().__init__(surface, color)
-        self.x = x
-        self.y = y
-        self.side = side
-
-    def draw(self):
-        pygame.draw.rect(self.surface, self.color,
-                         pygame.Rect(self.x, self.y, self.side, self.side))
-
-
-class Triangle(GameObject):
-    def __init__(self, surface, color, points):
-        super().__init__(surface, color)
-        self.points = points
-
-    def draw(self):
-        pygame.draw.polygon(self.surface, self.color, self.points)
-
-
-circle = Circle(screen, (255, 0, 0), SCREEN_CENTER_X, SCREEN_CENTER_Y, 40)
-square = Square(screen, (0, 255, 0), 450, 200, 100)
-triangle = Triangle(screen, (0, 0, 255), [(150, 200), (50, 300), (250, 300)])
+circle = Circle(screen, 
+        (255, 0, 0), 
+        SCREEN_CENTER_X, 
+        SCREEN_CENTER_Y, 
+        40, 
+        50)
 
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
     screen.fill((0, 0, 0))
     circle.draw()
-    square.draw()
-    triangle.draw()
+    if circle.x + circle.radius >= SCREEN_WIDTH:
+        circle.direction = -1
+    if circle.x - circle.radius <= 0:
+        circle.direction = 1
+    circle.x += circle.speed * circle.direction
     pygame.display.update()
+
     clock.tick(FPS)
 
-pygame.quit()
+pygame.quit() 
